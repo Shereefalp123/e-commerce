@@ -13,23 +13,23 @@ console.log(email,password)
     try {
       const response = await axios.get('http://localhost:5000/users')
       if (response.status !== 200) {
-        alert ('coundl something')
+        alert ('Something went wrong')
         return
       }
       const users = response.data
       if (users.length <= 0){
-        alert ("no users found")
+        alert ("No users found")
         return
       }
       const user = users?.find((u)=>u.email ===email)
       if (!user){
-        alert ('user not found')
+        alert ('User not found')
         return
       } 
       const isPass = user.password === password
       console.log(user,password,isPass)
       if(!isPass){
-        alert("incorrect password")
+        alert("Incorrect password")
         return
       }
       navigate('/')
