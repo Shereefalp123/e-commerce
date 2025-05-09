@@ -26,9 +26,8 @@ console.log(email,password)
         alert ('User not found')
         return
       } 
-      const isPass = user.password === password
-      console.log(user,password,isPass)
-      if(!isPass){
+      const isValid = user.password === password
+      if(!isValid){
         alert("Incorrect password")
         return
       }
@@ -36,6 +35,9 @@ console.log(email,password)
     } catch (error) {
       console.error('Error during login:', error);
       alert('Something went wrong. Please try again.');
+    }finally{
+      setEmail("")
+      setPassword("")
     }
   };
 
