@@ -5,12 +5,16 @@ import ProductItem from '../components/ProductItem';
 
 function Collection() {
 
+ 
+
   const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [fillterProducts, setFillterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState('relevent')
+
+   // {===================================category and subcategory==============================================}
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -28,6 +32,9 @@ function Collection() {
     }
   }
 
+
+  // {=======================================================fetching===============================================================}
+
   const applyFilter = () => {
     let productsCopy = products.slice()
 
@@ -44,6 +51,9 @@ function Collection() {
     }
     setFillterProducts(productsCopy)
   }
+
+
+  // {=========================================================sort======================================================}
 
   const sortProduct = () => {
     let fpCopy = fillterProducts.slice();
@@ -74,6 +84,8 @@ function Collection() {
     sortProduct();
   }, [sortType])
 
+  // {========================================================================================================}
+
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
 
@@ -83,7 +95,7 @@ function Collection() {
         </p>
         {/* {catogery fillter} */}
         <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-          <p className='mb-3 text-sm font-medium'>CATGORIES</p>
+          <p className='mb-3 text-sm font-medium'>CATEGORIES</p>
           <div className='flex flex-col gap-2 text-sm font-light text-gray-700 '> 
             <p className='flex gap-2'>
               <input type="checkbox" value={'Men'} onChange={toggleCategory} />Men

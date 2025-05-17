@@ -1,50 +1,84 @@
-import React, { useContext } from 'react'
-import { ShopContext } from '../context/ShopContext'
-import Title from '../components/Title'
-
+import React, { useEffect, useState, useContext } from 'react';
+import { ShopContext } from '../context/ShopContext';
+import Title from '../components/Title';
+import { useNavigate } from 'react-router-dom';
 
 const Orders = () => {
-  const {products , currency} = useContext(ShopContext)
-  return (
-    <div className='border-t pt-16'>
+  const { currency, user } = useContext(ShopContext);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-      <div className='text-2xl'>
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
 
-        <Title text1={'MY'} text2={'ORDERS'}/>
-
-      </div>
-      
-      <div>
-
-        {
-          products.slice(1,4).map((item,index)=>(
-             <div key={index} className='py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-              <div className='flex items-start gap-6 text-sm'>
-                <img className='w-16 sm:w-20' src={item.image[0]} alt="" />
-                <div>
-                  <p className='sm:text-base font-medium'>{item.name}</p>
-                  <div className='flex items-center gap-3 mt-2 text-base text-gray-700'>
-                    <p className='text-lg'>{currency}{item.price}</p>
-                    <p>Quantity: 1</p>
-                  </div>
-                  <p className='mt-2'>Date: <span className='text-gray-400 '>05/02/2025</span></p>
-                </div>
-              </div>
-              <div className='md:w-1/2 flex justify-between'>
-              <div className='flex items-center gap-2'>
-                <p className='min-w-2 h-2 rounded-full bg-green-500'></p>
-                <p className='text-sm md:text-base'>Ready to ship</p>
-              </div>
-              <button className='border px-4 py-2 text-sm font-medium rounded-sm'>Track Order</button>
-              </div>
-             </div>
-          ))
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/orders?userId=${user.id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders');
         }
-        
+        const userOrders = await response.json();
+        setOrders(userOrders);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setError('There was an error loading your orders.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user, navigate]);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading your orders...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center mt-10 text-red-500">{error}</p>;
+  }
+
+  if (!user) {
+    return <p className="text-center mt-10">Please log in to view your orders.</p>;
+  }
+
+  return (
+    <div className="border-t pt-16">
+      <div className="text-2xl">
+        <Title text1={'MY'} text2={'ORDERS'} />
       </div>
 
+      {orders.length === 0 ? (
+        <p className="text-center mt-10">No orders placed yet.</p>
+      ) : (
+        <div>
+          {orders.map((order, index) => (
+            <div key={index} className="border-t border-b py-6">
+              <p className="mb-4 text-gray-500 text-sm">Date: {order.date}</p>
+              {order.items.map((item, i) => (
+                <div key={i} className="flex justify-between items-center text-sm sm:text-base mb-4">
+                  <div className="flex items-start gap-4">
+                    <img className="w-16 sm:w-20" src={item.image} alt={item.name} />
+                    <div>
+                      <p className="font-medium">{item.name}</p>
+                      <p className="mt-1">Quantity: {item.quantity}</p>
+                      <p className="mt-1">{currency}{(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className="text-green-600 text-xs sm:text-sm">{order.status}</div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;

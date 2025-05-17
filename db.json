@@ -4,7 +4,7 @@
       "id": "aaaaa",
       "name": "ROLEX GOLD",
       "description": "ROLEX GOLD DESERT EDITION.",
-      "price": 100,
+      "price": "100",
       "image": [
         "/images/p_img1.png"
       ],
@@ -398,13 +398,276 @@
       "id": "9f16",
       "name": "shereef",
       "email": "shereef@alp",
-      "password": "123"
+      "password": "123",
+      "cart": {
+        "aaaac": 1
+      },
+      "isBlocked": false,
+      "isDeleted": false
     },
     {
-      "id": "c5bf",
-      "name": "shereef",
-      "email": "shereef@123",
-      "password": "123"
+      "id": "a531",
+      "name": "irfan",
+      "email": "ifran@mjr",
+      "password": "123",
+      "cart": {},
+      "isBlocked": false,
+      "isDeleted": false
+    },
+    {
+      "id": "311c",
+      "name": "Shereef123",
+      "email": "Shereefalp@123",
+      "password": "123",
+      "cart": {
+        "aaaac": 1
+      },
+      "isBlocked": false,
+      "isDeleted": false
+    }
+  ],
+  "orders": [
+    {
+      "id": "17ca",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 4
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "11/5/2025",
+      "status": "Cancelled"
+    },
+    {
+      "id": "b79f",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "ttttt",
+      "paymentMethod": "Cash on Delivery",
+      "date": "11/5/2025",
+      "status": "Shipped"
+    },
+    {
+      "id": "0d8a",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "14/5/2025",
+      "status": "Cancelled"
+    },
+    {
+      "id": "1c49",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaaa",
+          "name": "ROLEX GOLD",
+          "image": "/images/p_img1.png",
+          "price": 100,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "14/5/2025",
+      "status": "Delivered"
+    },
+    {
+      "id": "5fb7",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaaa",
+          "name": "ROLEX GOLD",
+          "image": "/images/p_img1.png",
+          "price": 100,
+          "quantity": 4
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "15/5/2025",
+      "status": "Cancelled"
+    },
+    {
+      "id": "b66b",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "d614",
+          "name": "new 2",
+          "image": "https://cdn.shopify.com/s/files/1/1762/7203/products/SINOBI-2017-Mens-Watches-Top-Brand-Luxury-Business-Stainless-Steel-Quartz-Watch-Male-Sport-Chronograph-Clock_14cef2b0-9b99-4b59-92b4-20ec35f8a162_1024x1024.jpg?v=1583680494",
+          "price": 999,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "15/5/2025",
+      "status": "Shipped"
+    },
+    {
+      "id": "a8c6",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaab",
+          "name": "ROLEX SILVER BLUE",
+          "image": "/images/p_img2_1.png",
+          "price": 200,
+          "quantity": 2
+        },
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 2
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "15/5/2025",
+      "status": "Delivered"
+    },
+    {
+      "id": "c2a2",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaaa",
+          "name": "ROLEX GOLD",
+          "image": "/images/p_img1.png",
+          "price": "100",
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "16/5/2025",
+      "status": "Ready to ship"
+    },
+    {
+      "id": "64bc",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 2
+        }
+      ],
+      "deliveryInfo": "dddc",
+      "paymentMethod": "Cash on Delivery",
+      "date": "17/05/2025",
+      "status": "Ready to ship"
+    },
+    {
+      "id": "0cf1",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaab",
+          "name": "ROLEX SILVER BLUE",
+          "image": "/images/p_img2_1.png",
+          "price": 200,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "17/05/2025",
+      "status": "Ready to ship"
+    },
+    {
+      "id": "ba9b",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaab",
+          "name": "ROLEX SILVER BLUE",
+          "image": "/images/p_img2_1.png",
+          "price": 200,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "17/05/2025",
+      "status": "Ready to ship"
+    },
+    {
+      "id": "f619",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaab",
+          "name": "ROLEX SILVER BLUE",
+          "image": "/images/p_img2_1.png",
+          "price": 200,
+          "quantity": 1
+        }
+      ],
+      "deliveryInfo": "",
+      "paymentMethod": "Cash on Delivery",
+      "date": "17/05/2025",
+      "status": "Ready to ship"
+    },
+    {
+      "id": "58e6",
+      "userId": "a531",
+      "items": [
+        {
+          "id": "aaaac",
+          "name": "ROLEX SILVER",
+          "image": "/images/p_img3.png",
+          "price": 220,
+          "quantity": 2
+        },
+        {
+          "id": "aaaae",
+          "name": "CHORAND RED",
+          "image": "/images/p_img5.png",
+          "price": 130,
+          "quantity": 1
+        },
+        {
+          "id": "aaaaa",
+          "name": "ROLEX GOLD",
+          "image": "/images/p_img1.png",
+          "price": "100",
+          "quantity": 2
+        }
+      ],
+      "deliveryInfo": "sss",
+      "paymentMethod": "Cash on Delivery",
+      "date": "17/05/2025",
+      "status": "Cancelled"
     }
   ]
 }

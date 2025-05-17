@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 const ProductItem = ({ id, image, name, price }) => {
   const { currency } = useContext(ShopContext)
 
-  // Log the image to check if it is correct
+  
   useEffect(()=>{
   },[])
 
@@ -14,7 +14,7 @@ const ProductItem = ({ id, image, name, price }) => {
       <div className='overflow-hidden'>
         <img
           className='hover:scale-110 transition ease-in-out'
-          src={image[0]}  // Directly use image instead of image[0]
+          src={image[0]}  
           alt={name}
         />
       </div>

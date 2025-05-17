@@ -1,67 +1,151 @@
-import React, { useContext, useState } from 'react'
-import Title from '../components/Title'
-import CartTotal from '../components/CartTotal'
-import { assets } from '../assets/assets'
-import { ShopContext } from '../context/ShopContext'
+import React, { useContext, useState } from 'react';
+import { ShopContext } from '../context/ShopContext';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const PlaceOrder = () => {
-  const [method,setMethod]=useState('cod');
-  const {navigate}=useContext(ShopContext)
+  const { cartItems, products, user, currency, clearCartAfterOrder } = useContext(ShopContext);
+  const [deliveryInfo, setDeliveryInfo] = useState('');
+  const [method, setMethod] = useState('Cash on Delivery');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handlePlaceOrder = async () => {
+    setLoading(true);
+    setError('');
+
+    // ✅ NEW: Check if deliveryInfo is empty
+    if (!deliveryInfo.trim()) {
+      setError('Delivery information is required.');
+      setLoading(false);
+      return;
+    }
+
+    // ============ Fetching cart items for order ============
+    const orderItems = Object.entries(cartItems)
+      .filter(([id, qty]) => qty > 0)
+      .map(([id, qty]) => {
+        const product = products.find((p) => p.id === id);
+        return {
+          id,
+          name: product?.name,
+          image: product?.image[0],
+          price: product?.price,
+          quantity: qty,
+        };
+      });
+
+    if (orderItems.length === 0) {
+      setError('Your cart is empty!');
+      setLoading(false);
+      return;
+    }
+
+    const newOrder = {
+      userId: user.id,
+      items: orderItems,
+      deliveryInfo,
+      paymentMethod: method,
+      date: new Date().toLocaleDateString(),
+      status: 'Ready to ship',
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3000/orders', newOrder, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status !== 201) {
+        throw new Error('Failed to place the order');
+      }
+
+      await clearCartAfterOrder();
+      navigate('/orders');
+    } catch (error) {
+      setError('There was an error placing your order. Please try again.');
+      console.error('Error placing order:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
-     
-      {/* {---------------------------------left side-------------------------------------} */}
-      <div className='flex flex-col gap-4 w-full sm:max-w-[480px]'>
+    <div className="place-order p-4 sm:p-8 max-w-4xl mx-auto">
+      <h2 className="text-3xl mb-5 font-semibold">Place Your Order</h2>
 
-        <div className='text-xl sm:text-2xl my-3'>
-          <Title text1={'DELIVERY'}text2={'INFORMATION'}/>
-        </div>
-
-        <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='First name' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Last name' />
-        </div>
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="email" placeholder='Email address' />
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Street' />
-        <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='City' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='State' />
-        </div>
-        <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Pincode' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Country' />
-        </div>
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Phone' />
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Delivery Information:</label>
+        <textarea
+          value={deliveryInfo}
+          onChange={(e) => setDeliveryInfo(e.target.value)}
+          placeholder="Enter your delivery address"
+          className="w-full border border-gray-300 p-2 rounded"
+          rows={4}
+          required // ✅ optional — but doesn't trigger unless inside a <form>
+        />
       </div>
-      {/* {----------------------------------------------right side---------------------------------} */}
-      <div className='mt-8'>
-        <div className='mt-8 min-w-80'>
-          <CartTotal/>
-        </div>
-        <div className='mt-12'>
-           <Title text1={'PAYMENT'} text2={'METHOD'}/>
-           {/* {-------------------payment method-----------------------} */}
-           <div className='flex gap-3 flex-col lg:flex-row'>
-            <div onClick={()=>setMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
-               <img className='h-5 mx-4' src={assets.stripe_logo} alt="" />
-            </div>
-            <div onClick={()=>setMethod('razorpay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'razorpay' ? 'bg-green-400' : ''}`}></p>
-               <img className='h-5 mx-4' src={assets.razorpay_logo} alt="" />
-            </div>
-            <div onClick={()=>setMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'cod' ? 'bg-green-400' : ''}`}></p>
-              <p className='text-gray-500 text-sm font-medium mx-4'>CASH ON DELIVERY</p>
-            </div>
-           </div>
-        </div>
-        <div className='w-full text-end mt-8'>
-          <button onClick={()=>navigate('/orders')} className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
-        </div>
+
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Payment Method:</label>
+        <select
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
+          className="w-full border border-gray-300 p-2 rounded"
+        >
+          <option value="Cash on Delivery">Cash on Delivery</option>
+          <option value="Credit Card">Credit Card</option>
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">Order Summary</h3>
+        <ul>
+          {Object.entries(cartItems)
+            .filter(([id, qty]) => qty > 0)
+            .map(([id, qty]) => {
+              const product = products.find((p) => p.id === id);
+              return (
+                <li key={id} className="flex justify-between py-2 border-b">
+                  <span>{product?.name}</span>
+                  <span>
+                    {currency}
+                    {product?.price} x {qty}
+                  </span>
+                </li>
+              );
+            })}
+        </ul>
+      </div>
+
+      <div className="flex justify-between mb-4 font-medium">
+        <span>Total:</span>
+        <span>
+          {currency}
+          {Object.entries(cartItems)
+            .reduce((total, [id, qty]) => {
+              const product = products.find((p) => p.id === id);
+              return product ? total + product.price * qty : total;
+            }, 0)
+            .toFixed(2)}
+        </span>
+      </div>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
+      <div className="text-right">
+        <button
+          onClick={handlePlaceOrder}
+          className="bg-black text-white py-2 px-8 rounded hover:bg-gray-900 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? 'Placing Order...' : 'Place Order'}
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PlaceOrder
+export default PlaceOrder;

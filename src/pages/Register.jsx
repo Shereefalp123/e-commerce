@@ -10,10 +10,17 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newUser = { name, email, password };
+    const newUser = {
+      name,
+      email,
+      password,
+      cart: {},
+      isBlocked: false,
+      isDeleted: false,
+    };
 
     try {
-      const response = await axios.post('http://localhost:5000/users', newUser);
+      const response = await axios.post('http://localhost:3000/users', newUser);
 
       if (response.status === 201) {
         setMessage('User registered successfully!');
@@ -39,6 +46,7 @@ function Register() {
           <p className="prata-regular text-3xl">Sign up</p>
           <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
         </div>
+
         <input
           type="text"
           className="w-full px-3 py-2 border border-gray-800"
@@ -63,9 +71,11 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
         <div className="w-full flex justify-between text-sm mt-[-8px]">
           <p className="cursor-pointer">Forgot your password?</p>
         </div>
+
         <button className="bg-black text-white font-light px-8 py-2 mt-4">
           Sign Up
         </button>

@@ -1,78 +1,129 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import axios from 'axios'; // Axios for making API requests
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ShopContext } from '../context/ShopContext';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { setUser, setCartItems } = useContext(ShopContext);
+  const navigate = useNavigate();
+
+  //  {========================================navigate to home==================================================================}
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) navigate('/');
+  }, [navigate]);
+
+  //================================================handle submit===================================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-console.log(email,password)
+    setError('');
+    setIsLoading(true);
+     
+    //=====================checking email and pass=====================
+
+    if (!email || !password) {
+      setError('Please fill out both fields.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.get('http://localhost:5000/users')
-      if (response.status !== 200) {
-        alert ('Something went wrong')
-        return
+      const res = await axios.get(`http://localhost:3000/users?email=${email}`);
+      const user = res.data.find((u) => u.email.toLowerCase() === email.toLowerCase());
+      
+
+
+      if (!user) {
+        setError('User not found');
+        setIsLoading(false);
+        return;
       }
-      const users = response.data
-      if (users.length <= 0){
-        alert ("No users found")
-        return
+
+      //========================== check for blocked or deleted user ==========================
+
+      if (user.isDeleted) {
+        setError('This account has been deleted.');
+        setIsLoading(false);
+        return;
       }
-      const user = users?.find((u)=>u.email ===email)
-      if (!user){
-        alert ('User not found')
-        return
-      } 
-      const isValid = user.password === password
-      if(!isValid){
-        alert("Incorrect password")
-        return
+
+      if (user.isBlocked) {
+        setError('This account has been blocked. Please contact support.');
+        setIsLoading(false);
+        return;
       }
-      navigate('/')
-    } catch (error) {
-      console.error('Error during login:', error);
-      alert('Something went wrong. Please try again.');
-    }finally{
-      setEmail("")
-      setPassword("")
+
+      //========================== check password match ==========================
+
+      if (user.password !== password) {
+        setError('Incorrect password');
+        setIsLoading(false);
+        return;
+      }
+
+      //=================setting user and cart to local storage==============================
+
+      const cartResponse = await axios.get(`http://localhost:3000/users/${user.id}`);
+      const cart = cartResponse.data.cart || {};
+
+      setUser(user);
+      setCartItems(cart);
+
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(`cart_${user.id}`, JSON.stringify(cart));
+
+      //=============================navigate==================================================
+
+      navigate('/');
+
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit}
-        className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-700'
-      >
-        <div className='inline-flex items-center gap-2 mb-2 mt-10'>
-          <p className='prata-regular text-3xl'>Login</p>
-          <hr className='border-none h-[1.5px] w-8 bg-gray-800' />
-        </div>
+    <div className="mt-20 flex justify-center">
+      <form onSubmit={handleSubmit} className="w-[90%] sm:max-w-96 flex flex-col gap-4 text-gray-700">
+        <h2 className="text-3xl mb-2">Login</h2>
+
+        {error && <div className="text-red-500 text-sm">{error}</div>}
+
         <input
           type="email"
-          className='w-full px-3 py-2 border border-gray-800'
-          placeholder='Email'
+          autoComplete="email"
+          className="px-3 py-2 border border-gray-800"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          disabled={isLoading}
         />
+
         <input
-          type="text"
-          className='w-full px-3 py-2 border border-gray-800'
-          placeholder='Password'
+          type="password"
+          autoComplete="current-password"
+          className="px-3 py-2 border border-gray-800"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          disabled={isLoading}
         />
-        <div className='w-full flex justify-between text-sm mt-[-8px]'>
-          <p className='cursor-pointer'>Forgot your password?</p>
-        </div>
-        <button className='bg-black text-white font-light px-8 py-2 mt-4'>
-          Log In
+
+        <button type="submit" className="bg-black text-white py-2" disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Log In'}
         </button>
+
+        {isLoading && <div>Loading...</div>}
       </form>
     </div>
   );
